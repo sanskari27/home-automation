@@ -1,6 +1,13 @@
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 
+import sys
+import config
+
+sys.path.append(config.BASE_FOLDER)
+from modules import  Switch
+
+
 router = APIRouter()
 import config
 
@@ -34,13 +41,11 @@ async def upload_file(file: UploadFile = File(...), name: str = Form(...)):
 
 
 @router.post("/enroll-fingerprint/")
-async def enroll_fingerprint(name: str):
-    known_persons = images.list_dirs()
+async def enroll_fingerprint(index: int):
     try:
-        index = known_persons.index(name)
         status = fingerprint.enroll(index)
         return {
-            "success": "status",
+            "success": status,
         }
     except:
         return {
@@ -55,5 +60,11 @@ async def open_gate():
 @router.post("/close-gate")
 async def close_gate():
     gate.close()
+    return {"success": True}
+
+
+@router.post("/switch")
+async def switch(name:str,status:int):
+    getattr(Switch.get_instance(), name)(status == 1 ) 
     return {"success": True}
     

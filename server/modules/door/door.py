@@ -5,9 +5,6 @@ from threading import Thread
 import sys
 
 
-sys.path.append(config.BASE_FOLDER)
-from modules.switch.switch import Switch
-
 
 LOCK_PIN=config.LOCK_PIN
 TRIG=config.TRIG
@@ -47,9 +44,6 @@ class Door:
             return
         self.curr_state = 'OPEN'        
         GPIO.output(LOCK_PIN, GPIO.HIGH)
-        Switch.get_instance().switch_1(True)
-        Switch.get_instance().switch_2(True)
-        Switch.get_instance().switch_3(True)
         self.last_open = time.time()
         
     def is_open(self):
@@ -60,9 +54,6 @@ class Door:
             return
         self.curr_state = 'CLOSE'
         GPIO.output(LOCK_PIN, GPIO.LOW)
-        Switch.get_instance().switch_1(False)
-        Switch.get_instance().switch_2(False)
-        Switch.get_instance().switch_3(False)
                 
         
     def __check_close(self,on_door_close=lambda x: None):
